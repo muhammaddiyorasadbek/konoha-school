@@ -9,11 +9,23 @@ interface Ctx {
 
 const LangContext = createContext<Ctx | null>(null);
 
+const LANG_KEY = "konoha_lang";
+
 export function LangProvider({ children }: { children: ReactNode }) {
-  // Sayt har doim birinchi marta O'ZBEK tilida ochiladi.
-  // Foydalanuvchi tilni o'zgartirsa, faqat shu sessiya davomida saqlanadi
-  // (sahifa yopilsa va qayta ochilsa — yana o'zbek tilida boshlanadi).
-  const [lang, setLang] = useState<Lang>("uz");
+  const [lang, setLangState] = useState<Lang>(() => {
+    try {
+      const saved = localStorage.getItem(LANG_KEY) as Lang | null;
+      if (saved && ["uz", "ru", "en", "ja"].includes(saved)) return saved;
+    } catch { /* ignore */ }
+    return "uz";
+  });
+
+  const setLang = (l: Lang) => {
+    setLangState(l);
+    try {
+      localStorage.setItem(LANG_KEY, l);
+    } catch { /* ignore */ }
+  };
 
   useEffect(() => {
     document.documentElement.lang = lang;
