@@ -2,14 +2,12 @@ import { createClient } from "@supabase/supabase-js";
 import { SUPABASE_CONFIG } from "../config";
 import type { AppDB, User, Student, Grade, Payment, News } from "./types";
 
-// Supabase client
 export const supabase = createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.anonKey);
 
 const DB_KEY = "konoha_admin_db";
 const DB_VERSION = "2";
 const VERSION_KEY = "konoha_admin_db_version";
 
-// Boshlang'ich ma'lumotlar
 function seedDB(): AppDB {
   const now = new Date().toISOString();
   return {
@@ -45,7 +43,6 @@ function seedDB(): AppDB {
   };
 }
 
-// LocalStorage va Cloud dan yuklashni uyg'unlashtiramiz
 export function loadDB(): AppDB {
   try {
     const savedVersion = localStorage.getItem(VERSION_KEY);
@@ -56,13 +53,11 @@ export function loadDB(): AppDB {
     const raw = localStorage.getItem(DB_KEY);
     if (raw) return JSON.parse(raw);
   } catch { /* ignore */ }
-  
   const seeded = seedDB();
   saveDB(seeded);
   return seeded;
 }
 
-// Bulutdan ma'lumotlarni majburiy yangilash (Admin panelga kirganda ishlatamiz)
 export async function syncFromCloud(): Promise<AppDB | null> {
   try {
     const { data, error } = await supabase
@@ -70,16 +65,15 @@ export async function syncFromCloud(): Promise<AppDB | null> {
       .select('content')
       .eq('id', 'main_db')
       .single();
-    
-    if (error) {
+
+    if (error || !data?.content) {
       console.warn("Cloud data not found, using local.");
       return null;
     }
-    
-    if (data && data.content) {
-      localStorage.setItem(DB_KEY, JSON.stringify(data.content));
-      return data.content as AppDB;
-    }
+
+    localStorage.setItem(DB_KEY, JSON.stringify(data.content));
+    localStorage.setItem(VERSION_KEY, DB_VERSION);
+    return data.content as AppDB;
   } catch (err) {
     console.error("Sync error:", err);
   }
@@ -96,7 +90,6 @@ async function syncToCloud(db: AppDB) {
     const { error } = await supabase
       .from('app_data')
       .upsert({ id: 'main_db', content: db }, { onConflict: 'id' });
-    
     if (error) console.error("Cloud sync error:", error.message);
   } catch (err) {
     console.error("Failed to sync to cloud", err);
