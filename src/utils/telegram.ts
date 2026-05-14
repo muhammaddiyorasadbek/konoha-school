@@ -1,13 +1,4 @@
-// ==========================================================
-// Telegram orqali ariza yuborish (BOT KERAK EMAS!)
-// ==========================================================
-// Foydalanuvchi formani to'ldiradi → "Yuborish" tugmasini bosadi
-// → Telegram dasturi avtomatik ochiladi → tayyor xabar bilan
-// @KONOHA_UZ1 ga yuborish dialogi paydo bo'ladi → foydalanuvchi
-// faqat 1 ta "Yuborish" tugmasini bosadi → xabar sizga keladi.
-// ==========================================================
-
-export const TELEGRAM_USERNAME = "KONOHA_UZ1";
+export const TELEGRAM_USERNAME = "konoha_yapon_maktabi";
 
 export interface RegistrationData {
   type: "registration" | "contact";
@@ -15,6 +6,9 @@ export interface RegistrationData {
   phone: string;
   age?: string;
   course?: string;
+  schedule?: string;
+  goal?: string;
+  goalOther?: string;
   language: string;
 }
 
@@ -25,19 +19,12 @@ const langFlag: Record<string, string> = {
   ja: "🇯🇵 日本語",
 };
 
-/**
- * Foydalanuvchining Telegramda yuboradigan xabarini tayyorlaydi.
- * Chiroyli, tushunish oson, emojilar va bo'limlar bilan.
- */
 export function buildMessage(data: RegistrationData): string {
   const now = new Date();
   const date = now.toLocaleString("uz-UZ", {
     timeZone: "Asia/Tashkent",
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
+    year: "numeric", month: "2-digit", day: "2-digit",
+    hour: "2-digit", minute: "2-digit",
   });
 
   if (data.type === "registration") {
@@ -46,10 +33,12 @@ export function buildMessage(data: RegistrationData): string {
       "📝 YANGI RO'YXATDAN O'TISH",
       "━━━━━━━━━━━━━━━━━",
       "",
-      `👤 Ism familiya:  ${data.name}`,
-      `🎂 Yosh:          ${data.age || "-"}`,
-      `📞 Telefon:       ${data.phone}`,
+      `👤 Ism familiya:   ${data.name}`,
+      `🎂 Yosh:           ${data.age || "-"}`,
+      `📞 Telefon:        ${data.phone}`,
       `📚 Tanlangan kurs: ${data.course || "-"}`,
+      `🕐 Dars vaqti:     ${data.schedule || "-"}`,
+      `🎯 Maqsad:         ${data.goal === "other" ? (data.goalOther || "Boshqa") : (data.goal || "-")}`,
       "",
       "━━━━━━━━━━━━━━━━━",
       `🌐 Sayt tili:  ${langFlag[data.language] || data.language}`,
@@ -59,7 +48,6 @@ export function buildMessage(data: RegistrationData): string {
     ].join("\n");
   }
 
-  // contact form
   return [
     "🌸 KONOHA YAPON MAKTABI 🌸",
     "💬 ALOQA — YANGI MUROJAAT",
@@ -76,35 +64,13 @@ export function buildMessage(data: RegistrationData): string {
   ].join("\n");
 }
 
-/**
- * Telegram dasturini ochib, oldindan to'ldirilgan xabar bilan
- * @KONOHA_UZ1 ga yuborish dialogini ko'rsatadi.
- *
- * Foydalanuvchi faqat Telegramda "Yuborish" tugmasini bosadi
- * va xabar SIZGA (KONOHA_UZ1) keladi.
- */
 export function sendViaTelegram(data: RegistrationData): boolean {
   try {
     const message = buildMessage(data);
     const encoded = encodeURIComponent(message);
-
-    // t.me/share — Telegramning rasmiy "share" mexanizmi.
-    // Mobil qurilmalarda Telegram ilovasini, kompyuterda Telegram Web/Desktop ni ochadi.
-    // Foydalanuvchi qaysi profilga yuborishini tanlaydi, biz username'ni
-    // sarlavhada ko'rsatamiz, shunda u darhol topib yuboradi.
-    //
-    // Eng ishonchlisi - to'g'ridan-to'g'ri profilga link:
     const directUrl = `https://t.me/${TELEGRAM_USERNAME}?text=${encoded}`;
-
-    // Yangi tabda ochamiz (mobil qurilmada Telegram ilovasi avtomatik ochiladi)
     const win = window.open(directUrl, "_blank", "noopener,noreferrer");
-
-    // Agar popup blocker to'sgan bo'lsa, hozirgi sahifada ochamiz
-    if (!win) {
-      window.location.href = directUrl;
-    }
-
-    // Backup uchun localStorage'ga ham saqlaymiz (statistika)
+    if (!win) window.location.href = directUrl;
     saveToLocal(data);
     return true;
   } catch (err) {
@@ -113,16 +79,10 @@ export function sendViaTelegram(data: RegistrationData): boolean {
   }
 }
 
-/**
- * Backup — agar foydalanuvchi Telegramda yubormasdan chiqib ketsa,
- * sayt egasi keyinroq ariza ma'lumotlarini ko'ra olishi uchun.
- */
 function saveToLocal(data: RegistrationData) {
   try {
     const list = JSON.parse(localStorage.getItem("konoha_apps") || "[]");
     list.push({ ...data, savedAt: new Date().toISOString() });
     localStorage.setItem("konoha_apps", JSON.stringify(list.slice(-200)));
-  } catch {
-    // ignore
-  }
+  } catch { /* ignore */ }
 }
