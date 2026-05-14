@@ -312,16 +312,44 @@ body {
   transform-origin: left;
 }
 
-/* ============ CUSTOM SCROLLBAR ============ */
-::-webkit-scrollbar { width: 10px; }
-::-webkit-scrollbar-track { background: #fff5f7; }
+/* ============ CUSTOM SCROLLBAR — sakura style ============ */
+/* Chrome, Edge, Safari */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+  margin: 4px;
+}
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #f55a85, #c8102e);
-  border-radius: 10px;
+  background: linear-gradient(180deg, #ffa3bd 0%, #f55a85 50%, #e0356a 100%);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+  transition: all 0.3s ease;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, #c8102e, #8b0a1f);
+  background: linear-gradient(180deg, #f55a85 0%, #e0356a 50%, #c8102e 100%);
+  background-clip: padding-box;
+  border: 2px solid transparent;
 }
+::-webkit-scrollbar-thumb:active {
+  background: linear-gradient(180deg, #c8102e 0%, #8b0a1f 100%);
+  background-clip: padding-box;
+  border: 2px solid transparent;
+}
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #f55a85 transparent;
+}
+
+/* Modal va boshqa ichki scroll uchun ham qo'llaniladi */
 
 /* Selection color */
 ::selection {
