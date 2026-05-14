@@ -1,4 +1,4 @@
-export const TELEGRAM_USERNAME = "konoha_yapon_maktabi";
+export const TELEGRAM_USERNAME = "KONOHA_UZ1";
 
 export interface RegistrationData {
   type: "registration" | "contact";
