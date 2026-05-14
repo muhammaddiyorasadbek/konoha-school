@@ -101,7 +101,7 @@ export default function About() {
                     <span className="text-sakura-400">·</span>
                     <span>Kibana</span>
                   </div>
-                  <div className="text-sm text-gray-600 italic">— "yog'och guli"</div>
+                  <div className="text-sm text-gray-600 italic">— "daraxt guli"</div>
                 </div>
 
                 {/* Decorative line */}
