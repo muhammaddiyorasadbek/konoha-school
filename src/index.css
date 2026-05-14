@@ -20,6 +20,7 @@
 
 html {
   scroll-behavior: smooth;
+  overflow-x: hidden;
 }
 
 body {
@@ -317,6 +318,11 @@ body {
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
+}
+/* Gorizontal scroll bar yashirilgan */
+::-webkit-scrollbar:horizontal {
+  display: none;
+  height: 0;
 }
 ::-webkit-scrollbar-track {
   background: transparent;
