@@ -30,8 +30,8 @@ export const PHONE = "+998 94 594 58 80";
 
 // Ijtimoiy tarmoqlar
 export const SOCIAL = {
-  telegram: "https://t.me/KONOHA_UZ1",
-  telegram_username: "@KONOHA_UZ1",
+  telegram: "https://t.me/konoha_yapon_maktabi",
+  telegram_username: "@konoha_yapon_maktabi",
   instagram: "https://instagram.com/konoha.uz",
   instagram_username: "@konoha.uz",
 };
