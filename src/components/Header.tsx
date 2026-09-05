@@ -42,7 +42,7 @@ export default function Header({
       <div className="max-w-7xl mx-auto px-5 sm:px-8 py-4 flex items-center justify-between gap-3">
         <a href="#home" className="flex items-center gap-3 group">
           <div className="group-hover:scale-105 group-hover:rotate-6 transition-transform">
-            <Logo size={44} />
+            <Logo size={54} />
           </div>
           <div className="leading-tight">
             <div className="font-extrabold text-lg sm:text-xl text-konoha-red tracking-tight">
